@@ -1,6 +1,5 @@
 # cloudbuild.yaml - Automatisch builden en deployen naar Google Cloud Run
 steps:
-  # Stap 1: Container Image bouwen uit de `backend` directory
   - name: 'gcr.io/cloud-builders/docker'
     id: Build
     dir: 'backend'
