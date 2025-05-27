@@ -1,0 +1,47 @@
+# cloudbuild.yaml - Automatisch builden en deployen naar Google Cloud Run
+steps:
+  # Stap 1: Container Image bouwen uit de `backend` directory
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Build
+    dir: 'backend'
+    args:
+      [
+        'build',
+        '-t',
+        'gcr.io/$PROJECT_ID/backend-image:$SHORT_SHA',
+        '.'
+      ]
+
+  # Stap 2: Push de Docker-image naar Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Push
+    args:
+      [
+        'push',
+        'gcr.io/$PROJECT_ID/backend-image:$SHORT_SHA'
+      ]
+
+  # Stap 3: Deploy de Docker-image naar Google Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: Deploy
+    entrypoint: gcloud
+    args:
+      [
+        'run',
+        'deploy',
+        'backend-service', # Naam van je Cloud Run-service
+        '--image', 'gcr.io/$PROJECT_ID/backend-image:$SHORT_SHA', # Gebruik de image die we pushen
+        '--platform', 'managed', # Gebruik het beheerde Cloud Run-platform
+        '--region', 'us-central1', # Pas aan naar jouw regio (bijv. europe-west1)
+        '--allow-unauthenticated' # Zorg ervoor dat de service openbaar is
+      ]
+
+# Optionele notificaties (bijvoorbeeld voor Slack of via e-mail)
+# Substitutes voor dynamische build-specifieke parameters
+substitutions:
+  _REGION: 'us-central1'  # Pas aan naar jouw regio
+
+# Artefacten opslaan (bijvoorbeeld logs of debug-informatie)
+artifacts:
+  images:
+    - 'gcr.io/$PROJECT_ID/backend-image:$SHORT_SHA'
