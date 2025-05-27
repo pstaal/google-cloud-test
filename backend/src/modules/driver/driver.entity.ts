@@ -9,8 +9,6 @@ export class DriverEntity {
   @Column()
   name: string;
 
-  @ManyToMany(() => CarEntity, (car) => car.drivers, {
-    cascade: true,
-  })
+  @ManyToMany(() => CarEntity, (car) => car.drivers)
   cars: CarEntity[]
 }

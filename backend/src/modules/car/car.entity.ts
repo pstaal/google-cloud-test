@@ -12,9 +12,7 @@ export class CarEntity {
   @Column()
   year: number;
 
-  @ManyToMany(() => DriverEntity, (driver) => driver.cars, {
-    cascade: true,
-  })
+  @ManyToMany(() => DriverEntity, (driver) => driver.cars)
   @JoinTable()
   drivers: DriverEntity[]
 }
