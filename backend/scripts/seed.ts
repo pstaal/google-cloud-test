@@ -17,24 +17,29 @@ import { CarFactory } from '../src/modules/car/car.factory';
 
   const insertedDrivers = await app
     .get(DriverRepository)
-    .insert(new DriverFactory().generate(10, {}));
+    .save(new DriverFactory().generate(10, {}));
 
-  logSuccessEntity('Drivers', insertedDrivers.identifiers);
+  logSuccessEntity('Drivers', insertedDrivers);
 
   const insertedCar1 = await app
     .get(CarRepository)
-    .insert(new CarFactory().generateSingle({drivers: [insertedDrivers[0], insertedDrivers[1]]}))
+    .save(new CarFactory().generateSingle({ drivers: insertedDrivers.slice(0, 2)}))
 
   const insertedCar2 = await app
     .get(CarRepository)
-    .insert(new CarFactory().generateSingle({drivers: [insertedDrivers[2], insertedDrivers[3]]}))
+    .save(new CarFactory().generateSingle({ drivers: insertedDrivers.slice(2, 4)}))
 
   const insertedCar3 = await app
     .get(CarRepository)
-    .insert(new CarFactory().generateSingle({drivers: [insertedDrivers[3], insertedDrivers[4]]}))
+    .save(new CarFactory().generateSingle({ drivers: insertedDrivers.slice(4, 6)}))
+
+  const insertedCar5 = await app
+    .get(CarRepository)
+    .save(new CarFactory().generateSingle({ drivers: insertedDrivers.slice(6, 8)}))
 
 
   logFinished('Successfully seeded all entities');
 
   await process.exit(0);
 })();
+
