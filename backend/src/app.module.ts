@@ -24,6 +24,7 @@ import { DriverModule } from './modules/driver/driver.module';
         database: configService.getOrThrow('TYPEORM_DATABASE'),
         autoLoadEntities: true,
         synchronize: configService.getOrThrow('SYNCHRONIZE_DATABASE'),
+        logging: true,
       }),
     }), CarModule, DriverModule],
   controllers: [AppController],
