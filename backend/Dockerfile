@@ -13,7 +13,7 @@ RUN corepack enable
 RUN yarn install
 
 # Kopieer de rest van de applicatiecode naar de container
-COPY ./backend /backend
+COPY ./backend .
 
 # Stel het standaardcommando in om de applicatie te starten
 CMD ["yarn", "serve"]
