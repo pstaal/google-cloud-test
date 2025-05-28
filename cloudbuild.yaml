@@ -59,7 +59,9 @@ steps:
     args:
       [
         'run',
-        '--rm', # Clean up the container after it runs
+        '--rm', # Automatically clean up the container after it runs
+        '-e', 'GOOGLE_APPLICATION_CREDENTIALS=/config/gcloud/application_default_credentials.json', # Set an env var for credentials
+        '-v', '/workspace/.config/gcloud:/config/gcloud:ro', # Mount the credentials from Cloud Build
         'gcr.io/$PROJECT_ID/frontend-image:$SHORT_SHA'
       ]
 
