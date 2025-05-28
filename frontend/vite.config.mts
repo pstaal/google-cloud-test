@@ -68,7 +68,7 @@ export default defineConfig(({ mode }) => {
       ],
     },
     server: {
-      port: parseInt(process.env.VITE_PORT) || 3000,
+      port: 3000,
     },
     css: {
       preprocessorOptions: {
