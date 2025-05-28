@@ -15,13 +15,8 @@ RUN yarn install
 # Kopieer de rest van de applicatiecode naar de container
 COPY . .
 
-## stel de environment variablen in
-ENV APP_PORT=8080
-ENV TYPEORM_PORT=5432
-ENV TYPEORM_HOST=/cloudsql/rommelproject1:europe-west1:cars-and-drivers
-ENV TYPEORM_USERNAME=peter
-ENV TYPEORM_PASSWORD=geheim
-ENV SYNCHRONIZE_DATABASE=false
+# EXPOSE de poort die jouw applicatie gebruikt
+EXPOSE 8080
 
 # Stel het standaardcommando in om de applicatie te starten
 CMD ["yarn", "serve"]
