@@ -35,8 +35,7 @@ steps:
         '--allow-unauthenticated' # Zorg ervoor dat de service openbaar is
       ]
 
-# Optionele notificaties (bijvoorbeeld voor Slack of via e-mail)
-# Substitutes voor dynamische build-specifieke parameters
+
 
 options:
   logging: CLOUD_LOGGING_ONLY
