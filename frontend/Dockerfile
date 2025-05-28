@@ -15,4 +15,4 @@ WORKDIR /app
 
 COPY --from=builder /app/dist /app/dist
 
-CMD ["bash", "-c", "gsutil -m rsync -r /app/dist gs://${BUCKET_NAME}"]
+CMD ["bash", "-c", "gsutil -m rsync -r /app/dist gs://frontend-ctrllearning-bucket"]
