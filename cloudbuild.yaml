@@ -1,7 +1,7 @@
 # cloudbuild.yaml - Automatisch builden en deployen naar Google Cloud Run
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    id: Build
+    id: Build-Backend
     dir: 'backend'
     args:
       [
@@ -13,7 +13,7 @@ steps:
 
   # Stap 1: Push de Docker-image naar Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    id: Push
+    id: Push-Backend
     args:
       [
         'push',
@@ -22,7 +22,7 @@ steps:
 
   # Stap 2: Deploy de Docker-image naar Google Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: Deploy
+    id: Deploy-Backend
     entrypoint: gcloud
     args:
       [
@@ -36,7 +36,7 @@ steps:
       ]
 
   - name: 'gcr.io/cloud-builders/docker'
-    id: Build
+    id: Build-Frontend
     dir: 'frontend'
     args:
       [
@@ -47,7 +47,7 @@ steps:
       ]
 
   - name: 'gcr.io/cloud-builders/docker'
-    id: Push
+    id: Push-Frontend
     args:
       [
         'push',
@@ -55,7 +55,7 @@ steps:
       ]
 
   - name: 'gcr.io/cloud-builders/docker'
-    id: Deploy
+    id: Deploy-Frontend
     args:
       [
         'run',
