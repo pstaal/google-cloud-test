@@ -15,4 +15,4 @@ WORKDIR /app
 
 COPY --from=builder /app/dist /app/dist
 
-CMD ["gsutil", "-m", "rsync", "-r", "/app/dist", "gs://frontend-ctrllearning-bucket"]
+CMD ["bash", "-c", "gcloud auth activate-service-account --key-file=/config/gcloud/application_default_credentials.json && gsutil -m rsync -r /app/dist gs://frontend-ctrllearning-bucket"]
