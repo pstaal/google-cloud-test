@@ -40,6 +40,9 @@ steps:
 substitutions:
   _REGION: 'europe-west1'  # Pas aan naar jouw regio
 
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 # Artefacten opslaan (bijvoorbeeld logs of debug-informatie)
 artifacts:
   images:
