@@ -5,7 +5,7 @@ FROM node:22.6.0
 WORKDIR /backend
 
 # Kopieer package.json en yarn.lock voor dependencies
-COPY backend/package.json yarn.lock ./
+COPY package.json yarn.lock ./
 
 RUN corepack enable
 
