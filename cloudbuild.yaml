@@ -31,14 +31,12 @@ steps:
         'backend-service', # Naam van je Cloud Run-service
         '--image', 'gcr.io/$PROJECT_ID/backend-image:$SHORT_SHA', # Gebruik de image die we pushen
         '--platform', 'managed', # Gebruik het beheerde Cloud Run-platform
-        '--region', 'us-central1', # Pas aan naar jouw regio (bijv. europe-west1)
+        '--region', 'europe-west1', # Pas aan naar jouw regio (bijv. europe-west1)
         '--allow-unauthenticated' # Zorg ervoor dat de service openbaar is
       ]
 
 # Optionele notificaties (bijvoorbeeld voor Slack of via e-mail)
 # Substitutes voor dynamische build-specifieke parameters
-substitutions:
-  _REGION: 'europe-west1'  # Pas aan naar jouw regio
 
 options:
   logging: CLOUD_LOGGING_ONLY
