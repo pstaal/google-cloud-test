@@ -5,7 +5,7 @@ FROM node:22.6.0
 WORKDIR /backend
 
 # Kopieer package.json en yarn.lock voor dependencies
-COPY package.json yarn.lock ./
+COPY backend/package.json yarn.lock ./
 
 RUN corepack enable
 
@@ -13,7 +13,7 @@ RUN corepack enable
 RUN yarn install
 
 # Kopieer de rest van de applicatiecode naar de container
-COPY . .
+COPY backend .
 
 # Stel het standaardcommando in om de applicatie te starten
 CMD ["yarn", "serve"]
