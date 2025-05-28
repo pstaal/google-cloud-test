@@ -35,8 +35,6 @@ steps:
         '--allow-unauthenticated' # Zorg ervoor dat de service openbaar is
       ]
 
-
-
 options:
   logging: CLOUD_LOGGING_ONLY
 
