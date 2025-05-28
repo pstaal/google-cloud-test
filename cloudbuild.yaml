@@ -11,7 +11,7 @@ steps:
         '.'
       ]
 
-  # Stap 2: Push de Docker-image naar Google Container Registry
+  # Stap 1: Push de Docker-image naar Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     id: Push
     args:
@@ -20,7 +20,7 @@ steps:
         'gcr.io/$PROJECT_ID/backend-image:$SHORT_SHA'
       ]
 
-  # Stap 3: Deploy de Docker-image naar Google Cloud Run
+  # Stap 2: Deploy de Docker-image naar Google Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: Deploy
     entrypoint: gcloud
@@ -34,6 +34,24 @@ steps:
         '--region', 'europe-west1', # Pas aan naar jouw regio (bijv. europe-west1)
         '--allow-unauthenticated' # Zorg ervoor dat de service openbaar is
       ]
+
+
+  # Step 1: Install dependencies
+  - name: node
+    dir: frontend
+    entrypoint: yarn
+    args: ["install"]
+
+  # Step 2: Run Vite build process
+  - name: node
+    dir: frontend
+    entrypoint: yarn
+    args: ["serve"]
+
+  # Step 3: Upload built Vite `dist` folder to Google Cloud Storage bucket
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    dir: frontend
+    args: ["gsutil", "-m", "cp", "-r", "dist/*", "gs://frontend-ctrllearning-bucket"]
 
 options:
   logging: CLOUD_LOGGING_ONLY
