@@ -9,6 +9,7 @@ export class CarController {
   @Get()
   async readAll(
   ) {
-    return await this.carService.readAll()
+    //return await this.carService.readAll()
+    return 'Hello Cars'
   }
 }

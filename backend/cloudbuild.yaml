@@ -38,7 +38,7 @@ steps:
 # Optionele notificaties (bijvoorbeeld voor Slack of via e-mail)
 # Substitutes voor dynamische build-specifieke parameters
 substitutions:
-  _REGION: 'us-central1'  # Pas aan naar jouw regio
+  _REGION: 'europe-west1'  # Pas aan naar jouw regio
 
 # Artefacten opslaan (bijvoorbeeld logs of debug-informatie)
 artifacts:
