@@ -1,19 +1,17 @@
-# Build Vue SPA
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY package*.json ./
+RUN npm install
 COPY . .
-RUN yarn build
+RUN npm run build
 
-# basis container met google cloud sdk voor kopieren van bestanden
-FROM google/cloud-sdk:alpine
+# Production image, copy built files and configure server
+FROM nginx:alpine
 
-WORKDIR /app
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-COPY --from=builder /app/dist /app/dist
+EXPOSE 80
 
-# Sync to bucket
-CMD ["gcloud", "storage", "rsync", "/app/dist", "gs://frontend-ctrllearning-bucket"]
+CMD ["nginx", "-g", "daemon off;"]
