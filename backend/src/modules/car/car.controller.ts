@@ -10,6 +10,6 @@ export class CarController {
   async readAll(
   ) {
     //return await this.carService.readAll()
-    return 'Hello Cars nieuw'
+    return 'Hello Cars'
   }
 }
