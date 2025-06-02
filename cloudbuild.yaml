@@ -50,12 +50,11 @@ steps:
   # Deploy the frontend to Google Cloud Storage
   - name: 'google/cloud-sdk:latest'
     id: Deploy-Frontend
+    entrypoint: 'gsutil'
     args:
       [
-        '/usr/bin/gcloud',
-        'storage',
-        'rsync',
         '-m',
+        'rsync',
         '-r',
         'frontend/app/dist',
         'gs://cloudrun-webapp-testomgeving-frontend'
