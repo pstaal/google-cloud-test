@@ -15,4 +15,5 @@ WORKDIR /app
 
 COPY --from=builder /app/dist /app/dist
 
-CMD ["bash", "-c", "gcloud storage rsync /app/dist gs://frontend-ctrllearning-bucket"]
+# Sync to bucket
+CMD ["gcloud", "storage", "rsync", "/app/dist", "gs://frontend-ctrllearning-bucket"]
