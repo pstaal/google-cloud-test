@@ -52,6 +52,11 @@ steps:
     entrypoint: 'bash'
     args: ['-c', 'ls -R /workspace']
 
+  # List files in the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'sh'
+    args: [ '-c', 'docker run --rm gcr.io/$PROJECT_ID/frontend-image:$SHORT_SHA ls -lha /app' ]
+
   # Deploy the frontend to Google Cloud Storage
   - name: 'google/cloud-sdk:latest'
     id: Deploy-Frontend
