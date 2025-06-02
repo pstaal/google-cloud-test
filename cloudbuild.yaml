@@ -56,7 +56,7 @@ steps:
         '-m',
         'rsync',
         '-r',
-        'frontend/app/dist',
+        '/app/dist',
         'gs://cloudrun-webapp-testomgeving-frontend'
       ]
 
