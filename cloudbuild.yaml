@@ -47,6 +47,11 @@ steps:
         '.'
       ]
 
+  # List files in workspace
+  - name: 'ubuntu'
+    entrypoint: 'bash'
+    args: ['-c', 'ls -R /workspace/frontend']
+
   # Deploy the frontend to Google Cloud Storage
   - name: 'google/cloud-sdk:latest'
     id: Deploy-Frontend
