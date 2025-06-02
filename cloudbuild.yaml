@@ -35,9 +35,7 @@ steps:
         '--allow-unauthenticated' # Zorg ervoor dat de service openbaar is
       ]
 
-
-
-    # Build the frontend Docker image
+  # Build the frontend Docker image
   - name: 'gcr.io/cloud-builders/docker'
     id: Build-Frontend
     dir: 'frontend' # Directory containing the Dockerfile
@@ -46,25 +44,10 @@ steps:
         'build',
         '-t',
         'gcr.io/$PROJECT_ID/frontend-image:$SHORT_SHA',
-        '.' # Use the Dockerfile in the 'frontend' directory
+        '.'
       ]
 
-    # Run the frontend Docker image to generate static assets
-  - name: 'gcr.io/$PROJECT_ID/frontend-image:$SHORT_SHA'
-    id: Generate-Frontend-Assets
-    volumes:
-        - name: assets
-          path: /assets
-    entrypoint: 'sh'
-    args:
-      - '-c'
-      - |
-        docker run --rm
-        -v $(pwd)/frontend/app/dist:/assets
-        gcr.io/$PROJECT_ID/frontend-image:$SHORT_SHA
-        sh -c 'cp -r /usr/share/nginx/html/* /assets'
-
-    # Deploy the frontend to Google Cloud Storage
+  # Deploy the frontend to Google Cloud Storage
   - name: 'google/cloud-sdk:latest'
     id: Deploy-Frontend
     args:
