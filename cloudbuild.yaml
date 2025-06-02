@@ -50,7 +50,7 @@ steps:
   # List files in workspace
   - name: 'ubuntu'
     entrypoint: 'bash'
-    args: ['-c', 'ls -R /workspace/frontend']
+    args: ['-c', 'ls -R /workspace/app']
 
   # Deploy the frontend to Google Cloud Storage
   - name: 'google/cloud-sdk:latest'
@@ -66,18 +66,7 @@ steps:
       ]
 
 options:
-  automapSubstitutions: true
-  substitution_option: 'ALLOW_LOOSE'
-  logging: GCS_ONLY
-  diskSizeGb: 100
-  machineType: 'e2-standard-2'
-  env:
-    - NODE_ENV=production
-  volumes:
-    - name: 'node_modules'
-      path: '/home/node/app/node_modules'
-  dockerTtl: '1600s'
-
+  logging: CLOUD_LOGGING_ONLY
 
 # Artefacten (bijvoorbeeld logs of debug-informatie)
 artifacts:
