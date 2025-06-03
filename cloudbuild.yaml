@@ -47,18 +47,23 @@ steps:
         '.'
       ]
 
-  # Deploy the frontend to Google Cloud Storage
-  - name: 'google/cloud-sdk:latest'
-    id: Deploy-Frontend
-    entrypoint: 'gsutil'
+
+  # Push de Docker-image naar Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Push-Frontend
     args:
-        [
-          '-m',
-          'rsync',
-          '-r',
-          'dist',
-          'gs://cloudrun-webapp-testomgeving-frontend'
-        ]
+      [
+        'push',
+        'gcr.io/$PROJECT_ID/frontend-image:$SHORT_SHA'
+      ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Run-Frontend
+    args:
+      - 'run'
+      - '--rm'
+      - 'gcr.io/$PROJECT_ID/frontend-image:$SHORT_SHA'
+
 
 options:
   logging: CLOUD_LOGGING_ONLY
