@@ -7,7 +7,8 @@ resource "google_project_service" "enabled_apis" {
     "run.googleapis.com",
     "containerregistry.googleapis.com",
     "cloudbuild.googleapis.com",
-    "servicenetworking.googleapis.com"
+    "servicenetworking.googleapis.com",
+    "vpcaccess.googleapis.com"
   ])
 
   project = var.project_id

@@ -16,6 +16,7 @@ RUN yarn install
 COPY . .
 
 # EXPOSE de poort die jouw applicatie gebruikt
+ENV PORT=8080
 EXPOSE 8080
 
 # Stel het standaardcommando in om de applicatie te starten
