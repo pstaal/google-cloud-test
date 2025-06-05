@@ -40,23 +40,25 @@ data "google_secret_manager_secret_version" "db_password_secret_version" {
 
 # Allocate a private IP range (required for private IP connection)
 resource "google_compute_global_address" "private_ip_range" {
+  depends_on = [null_resource.apis_enabled, google_compute_network.rommelproject_vpc]
   name          = "cloud-sql-private-ip-range"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
+  network       = google_compute_network.rommelproject_vpc.self_link
 }
 
 # Establish private service networking connection
 resource "google_service_networking_connection" "private_connection" {
-  depends_on = [null_resource.apis_enabled, google_compute_network.rommelproject_vpc]
-  network                 = "projects/${var.project_id}/global/networks/rommelproject-vpc" # Reference existing VPC
+  depends_on = [null_resource.apis_enabled, google_compute_network.rommelproject_vpc, google_compute_global_address.private_ip_range]
+  network                 = google_compute_network.rommelproject_vpc.self_link # Reference existing VPC
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
 }
 
 # Create a Cloud SQL instance with private IP
 resource "google_sql_database_instance" "db_instance" {
-  depends_on = [null_resource.apis_enabled, google_compute_network.rommelproject_vpc]
+  depends_on = [null_resource.apis_enabled, google_compute_network.rommelproject_vpc, google_service_networking_connection.private_connection]
   name             = "private-sql-instance"
   project          = var.project_id
   region           = "europe-west1"
@@ -68,7 +70,7 @@ resource "google_sql_database_instance" "db_instance" {
     availability_type = "ZONAL"
     ip_configuration {
       ipv4_enabled    = false
-      private_network = "projects/${var.project_id}/global/networks/rommelproject-vpc" # Reference existing VPC
+      private_network = google_compute_network.rommelproject_vpc.self_link # Reference existing VPC
     }
     database_flags {
       name  = "cloudsql.iam_authentication"
