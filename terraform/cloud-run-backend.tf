@@ -1,29 +1,3 @@
-# Maak een service-account voor Cloud Run met toegang tot de Cloud SQL instance
-resource "google_service_account" "cloud_run_sa" {
-  account_id   = "cloud-run-service-account"
-  display_name = "Cloud Run Service Account"
-}
-
-# Toewijzen van de "Cloud SQL Client" rol aan het service-account
-resource "google_project_iam_binding" "cloud_sql_client_role" {
-  project = var.project_id
-  role    = "roles/cloudsql.client"
-  members = ["serviceAccount:${google_service_account.cloud_run_sa.email}"]
-}
-
-# Toewijzen van de "Artifact Registry Reader" rol aan het service-account
-resource "google_project_iam_binding" "artifact_registry_reader_role" {
-  project = var.project_id
-  role    = "roles/artifactregistry.reader"
-  members = ["serviceAccount:${google_service_account.cloud_run_sa.email}"]
-}
-
-# Toewijzen van de "Storage Object Viewer" rol voor Google Container Registry (GCR)
-resource "google_project_iam_binding" "storage_object_viewer_role" {
-  project = var.project_id
-  role    = "roles/storage.objectViewer"
-  members = ["serviceAccount:${google_service_account.cloud_run_sa.email}"]
-}
 
 # serverless connector maken
 resource "google_vpc_access_connector" "serverless_connector" {
@@ -116,15 +90,11 @@ resource "google_cloud_run_service" "cloud_run_backend" {
     google_secret_manager_secret_version.db_password_secret_version,
     google_service_account.cloud_run_sa,
     google_sql_database_instance.db_instance,
+    google_project_iam_binding.artifact_registry_reader_role,
+    google_project_iam_binding.storage_object_viewer_role,
   ]
 }
 
-# Geef noodzakelijke machtigingen om Cloud Run te beheren
-resource "google_project_iam_binding" "run_admin_role" {
-  project = var.project_id
-  role    = "roles/run.admin"
-  members = ["serviceAccount:${google_service_account.cloud_run_sa.email}"]
-  depends_on = [google_cloud_run_service.cloud_run_backend]
-}
+
 
 

@@ -97,6 +97,6 @@ resource "google_sql_user" "user" {
     google_sql_database_instance.db_instance,
     google_service_networking_connection.private_connection,
     google_secret_manager_secret_version.db_user_secret_version,
-    google_secret_manager_secret_version.db_password_secret_version
+    google_secret_manager_secret_version.db_password_secret_version,
   ]
 }
