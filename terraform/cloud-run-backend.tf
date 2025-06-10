@@ -70,6 +70,10 @@ resource "google_cloud_run_service" "cloud_run_backend" {
           value = "http://0.0.0.0" # Bindt aan een wildcard IP-adres
         }
         env {
+          name = "TYPEORM_DATABASE"
+          value = "${var.environment}_example_db"
+        }
+        env {
           name  = "APP_PORT"
           value = "8080" # Cloud Run vereist poort 8080
         }
