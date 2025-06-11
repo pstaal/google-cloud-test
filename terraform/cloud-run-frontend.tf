@@ -47,20 +47,32 @@ resource "google_cloud_run_service" "cloud_run_frontend" {
 }
 
 # Cloud CDN inzetten met Cloud Run Frontend
-# Backend service voor Cloud CDN gebruiken
+# ----------- Maak een Serverless NEG (Network Endpoint Group) -----------
+resource "google_compute_region_network_endpoint_group" "cloud_run_frontend_neg" {
+  name                  = "cloud-run-frontend-neg"
+  region                = google_cloud_run_service.cloud_run_frontend.location # Gebruik dezelfde regio
+  network_endpoint_type = "SERVERLESS" # Geef aan dat dit een serverless NEG is
+
+  cloud_run {
+    service = google_cloud_run_service.cloud_run_frontend.name # Koppeling met Cloud Run
+  }
+
+  depends_on = [google_cloud_run_service.cloud_run_frontend]
+}
+
+# ----------- Backend Service voor Cloud CDN (met Serverless NEG) -----------
 resource "google_compute_backend_service" "frontend_cdn_backend" {
-  name     = "frontend-cdn-backend"
-  protocol = "HTTP"
+  name        = "frontend-cdn-backend"
+  protocol    = "HTTP" # Protocol voor de service
   timeout_sec = 30
 
   backend {
-    group = google_cloud_run_service.cloud_run_frontend.id # Vermelding van frontend Cloud Run
+    group = google_compute_region_network_endpoint_group.cloud_run_frontend_neg.id # Verwijzing naar de NEG
   }
 
   enable_cdn = true # Schakel Cloud CDN in
-  depends_on = [
-    google_cloud_run_service.cloud_run_frontend,   # Frontend Cloud Run service must exist
-  ]
+
+  depends_on = [google_compute_region_network_endpoint_group.cloud_run_frontend_neg]
 }
 
 # URL-map configureren voor Cloud CDN

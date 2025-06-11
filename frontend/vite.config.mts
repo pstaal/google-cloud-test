@@ -67,8 +67,17 @@ export default defineConfig(({ mode }) => {
         '.vue',
       ],
     },
+    build: {
+      rollupOptions: {
+        output: {
+          entryFileNames: 'assets/[name].[hash].js',
+          chunkFileNames: 'assets/[name].[hash].js',
+          assetFileNames: 'assets/[name].[hash].[ext]'
+        },
+      },
+    },
     server: {
-      port: 3000,
+      port: parseInt(process.env.VITE_PORT ?? "8080", 10),
     },
     css: {
       preprocessorOptions: {
