@@ -95,6 +95,29 @@ resource "google_cloud_run_service" "cloud_run_backend" {
   ]
 }
 
+# Serverless NEG voor Cloud Run Backend
+resource "google_compute_region_network_endpoint_group" "cloud_run_neg" {
+  name    = "cloud-run-neg"
+  region  = google_cloud_run_service.cloud_run_backend.location
+  network_endpoint_type = "SERVERLESS" # Geef aan dat dit een serverless NEG is
 
+  cloud_run {
+    service = google_cloud_run_service.cloud_run_backend.name # Verbindt met Cloud Run
+  }
 
+  depends_on = [google_cloud_run_service.cloud_run_backend]
+}
+
+resource "google_compute_backend_service" "cloud_run_backend_service" {
+  name                  = "cloud-run-backend-service"
+  protocol              = "HTTP"
+  timeout_sec           = 30 # Verhoog indien nodig voor lange verzoeken
+  load_balancing_scheme = "EXTERNAL"
+
+  backend {
+    group = google_compute_region_network_endpoint_group.cloud_run_neg.id # Link met de NEG
+  }
+
+  depends_on = [google_compute_region_network_endpoint_group.cloud_run_neg]
+}
 

@@ -50,7 +50,7 @@ resource "google_cloud_run_service" "cloud_run_frontend" {
 # ----------- Maak een Serverless NEG (Network Endpoint Group) -----------
 resource "google_compute_region_network_endpoint_group" "cloud_run_frontend_neg" {
   name                  = "cloud-run-frontend-neg"
-  region                = google_cloud_run_service.cloud_run_frontend.location # Gebruik dezelfde regio
+  region  = "europe-west1" # Zorg dat de regio overeenkomt
   network_endpoint_type = "SERVERLESS" # Geef aan dat dit een serverless NEG is
 
   cloud_run {
@@ -70,18 +70,50 @@ resource "google_compute_backend_service" "frontend_cdn_backend" {
     group = google_compute_region_network_endpoint_group.cloud_run_frontend_neg.id # Verwijzing naar de NEG
   }
 
+  cdn_policy {
+    cache_key_policy {
+      include_protocol    = true
+      include_host        = true
+      include_query_string = true
+    }
+  }
+
   enable_cdn = true # Schakel Cloud CDN in
 
   depends_on = [google_compute_region_network_endpoint_group.cloud_run_frontend_neg]
 }
 
-# URL-map configureren voor Cloud CDN
+# URL-map definieert routeren via hosts en paden
 resource "google_compute_url_map" "frontend_url_map" {
   name = "frontend-url-map"
 
+  # Default service voor alle paden die niet expliciet worden gematcht
   default_service = google_compute_backend_service.frontend_cdn_backend.id
+
+  # HostRule koppelt hostnamen aan een PathMatcher
+  host_rule {
+    # Definieert welke host(s) je wilt ondersteunen (gebruik '*' voor alle hosts)
+    hosts       = ["*"] # Wildcard accepteert alle inkomende verzoeken
+    path_matcher = "api-to-backend-matcher" # Link naar de path_matcher
+  }
+
+  # PathMatcher definieert het routeren van specifieke paden naar backend-services
+  path_matcher {
+    name = "api-to-backend-matcher" # Unieke naam voor de matcher
+
+    # Specifieke specifieke paden naar een specifieke backend-service
+    path_rule {
+      paths   = ["/api", "/api/*"] # API requests
+      service = google_compute_backend_service.cloud_run_backend_service.self_link
+    }
+
+    # Default routing: bijvoorbeeld voor niet-gespecificeerde paden
+    default_service = google_compute_backend_service.frontend_cdn_backend.id
+  }
+
   depends_on = [
-    google_compute_backend_service.frontend_cdn_backend,  # Ensures that backend service exists
+    google_compute_backend_service.frontend_cdn_backend,
+    google_compute_backend_service.cloud_run_backend_service
   ]
 }
 
