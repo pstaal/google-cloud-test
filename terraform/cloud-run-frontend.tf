@@ -46,6 +46,15 @@ resource "google_cloud_run_service" "cloud_run_frontend" {
   ]
 }
 
+resource "google_cloud_run_service_iam_member" "frontend_public_access" {
+  service  = google_cloud_run_service.cloud_run_frontend.name # Your frontend service
+  location = google_cloud_run_service.cloud_run_frontend.location
+
+  role    = "roles/run.invoker" # Allows invocation
+  member  = "allUsers" # Grant access to any user (anonymous/public access)
+  depends_on = [google_cloud_run_service.cloud_run_frontend]
+}
+
 # Cloud CDN inzetten met Cloud Run Frontend
 # ----------- Maak een Serverless NEG (Network Endpoint Group) -----------
 resource "google_compute_region_network_endpoint_group" "cloud_run_frontend_neg" {

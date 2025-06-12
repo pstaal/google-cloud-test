@@ -31,7 +31,7 @@ resource "google_cloud_run_service" "cloud_run_backend" {
 
   metadata {
     annotations = {
-      "run.googleapis.com/ingress" = "internal" # Beperk toegang via privé-ingress
+      "run.googleapis.com/ingress" = "internal-and-cloud-load-balancing"
     }
   }
 
@@ -93,6 +93,15 @@ resource "google_cloud_run_service" "cloud_run_backend" {
     google_project_iam_binding.artifact_registry_reader_role,
     google_project_iam_binding.storage_object_viewer_role,
   ]
+}
+
+resource "google_cloud_run_service_iam_member" "backend_public_access" {
+  service  = google_cloud_run_service.cloud_run_backend.name
+  location = google_cloud_run_service.cloud_run_backend.location
+
+  role   = "roles/run.invoker" # Allow invocation rights for public users
+  member = "allUsers" # Grant public access to all anonymous users
+  depends_on = [google_cloud_run_service.cloud_run_backend]
 }
 
 # Serverless NEG voor Cloud Run Backend

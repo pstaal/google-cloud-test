@@ -77,6 +77,11 @@ resource "google_sql_database_instance" "db_instance" {
       value = "off"
     }
   }
+
+  # Zorg ervoor dat dit eerst wordt vernietigd bij een destroy
+  lifecycle {
+    create_before_destroy = false
+  }
 }
 
 # Create a separate database in the SQL instance
